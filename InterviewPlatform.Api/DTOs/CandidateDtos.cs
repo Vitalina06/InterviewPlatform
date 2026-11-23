@@ -34,4 +34,5 @@ public class CandidateDto
     public string Phone { get; set; } = "";
     public string City { get; set; } = "";
     public List<SkillDto> Skills { get; set; } = new();
+    public List<InterviewShortDto> Interviews { get; set; } = new();
 }

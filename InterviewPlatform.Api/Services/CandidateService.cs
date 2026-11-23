@@ -55,6 +55,16 @@ public class CandidateService : ICandidateService
             City = candidate.City,
             Skills = candidate.Skills
                 .Select(s => new SkillDto { Name = s.Name, Rating = s.Rating })
+                .ToList(),
+            Interviews = candidate.Interviews
+                .OrderByDescending(i => i.ScheduledAt)
+                .Select(i => new InterviewShortDto
+                {
+                    Id = i.Id,
+                    VacancyTitle = i.Vacancy?.Title ?? "",
+                    ScheduledAt = i.ScheduledAt,
+                    Status = i.Status
+                })
                 .ToList()
         };
     }

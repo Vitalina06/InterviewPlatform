@@ -21,15 +21,12 @@ public class CandidateRepository : ICandidateRepository
 
     public async Task<Candidate?> GetByIdAsync(int id)
     {
-        return await _db.Candidates
-            .Include(c => c.Skills)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == id);
+        return await WithDetails().FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<List<Candidate>> SearchAsync(string? search)
     {
-        var query = _db.Candidates.Include(c => c.Skills).AsNoTracking();
+        var query = WithDetails();
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -39,5 +36,15 @@ public class CandidateRepository : ICandidateRepository
         }
 
         return await query.OrderBy(c => c.FullName).ToListAsync();
+    }
+
+    private IQueryable<Candidate> WithDetails()
+    {
+        return _db.Candidates
+            .Include(c => c.Skills)
+            .Include(c => c.Interviews)
+            .ThenInclude(i => i.Vacancy)
+            .AsSplitQuery()
+            .AsNoTracking();
     }
 }

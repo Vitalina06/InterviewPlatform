@@ -23,6 +23,21 @@ namespace InterviewPlatform.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("CompetencyVacancy", b =>
+                {
+                    b.Property<int>("CompetenciesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("VacanciesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CompetenciesId", "VacanciesId");
+
+                    b.HasIndex("VacanciesId");
+
+                    b.ToTable("CompetencyVacancy");
+                });
+
             modelBuilder.Entity("InterviewPlatform.Api.Models.Candidate", b =>
                 {
                     b.Property<int>("Id")
@@ -46,6 +61,112 @@ namespace InterviewPlatform.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Candidates");
+                });
+
+            modelBuilder.Entity("InterviewPlatform.Api.Models.Competency", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Competencies");
+                });
+
+            modelBuilder.Entity("InterviewPlatform.Api.Models.CompetencyRating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("CompetencyId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("InterviewId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetencyId");
+
+                    b.HasIndex("InterviewId");
+
+                    b.ToTable("CompetencyRating");
+                });
+
+            modelBuilder.Entity("InterviewPlatform.Api.Models.Interview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ScheduledAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("VacancyId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateId");
+
+                    b.HasIndex("VacancyId");
+
+                    b.ToTable("Interviews");
+                });
+
+            modelBuilder.Entity("InterviewPlatform.Api.Models.InterviewStage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("InterviewId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InterviewId");
+
+                    b.ToTable("InterviewStage");
                 });
 
             modelBuilder.Entity("InterviewPlatform.Api.Models.Skill", b =>
@@ -111,6 +232,83 @@ namespace InterviewPlatform.Api.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("InterviewPlatform.Api.Models.Vacancy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vacancies");
+                });
+
+            modelBuilder.Entity("CompetencyVacancy", b =>
+                {
+                    b.HasOne("InterviewPlatform.Api.Models.Competency", null)
+                        .WithMany()
+                        .HasForeignKey("CompetenciesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("InterviewPlatform.Api.Models.Vacancy", null)
+                        .WithMany()
+                        .HasForeignKey("VacanciesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("InterviewPlatform.Api.Models.CompetencyRating", b =>
+                {
+                    b.HasOne("InterviewPlatform.Api.Models.Competency", "Competency")
+                        .WithMany()
+                        .HasForeignKey("CompetencyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("InterviewPlatform.Api.Models.Interview", null)
+                        .WithMany("Ratings")
+                        .HasForeignKey("InterviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Competency");
+                });
+
+            modelBuilder.Entity("InterviewPlatform.Api.Models.Interview", b =>
+                {
+                    b.HasOne("InterviewPlatform.Api.Models.Candidate", "Candidate")
+                        .WithMany("Interviews")
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("InterviewPlatform.Api.Models.Vacancy", "Vacancy")
+                        .WithMany()
+                        .HasForeignKey("VacancyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Candidate");
+
+                    b.Navigation("Vacancy");
+                });
+
+            modelBuilder.Entity("InterviewPlatform.Api.Models.InterviewStage", b =>
+                {
+                    b.HasOne("InterviewPlatform.Api.Models.Interview", null)
+                        .WithMany("Stages")
+                        .HasForeignKey("InterviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("InterviewPlatform.Api.Models.Skill", b =>
                 {
                     b.HasOne("InterviewPlatform.Api.Models.Candidate", "Candidate")
@@ -124,7 +322,16 @@ namespace InterviewPlatform.Api.Migrations
 
             modelBuilder.Entity("InterviewPlatform.Api.Models.Candidate", b =>
                 {
+                    b.Navigation("Interviews");
+
                     b.Navigation("Skills");
+                });
+
+            modelBuilder.Entity("InterviewPlatform.Api.Models.Interview", b =>
+                {
+                    b.Navigation("Ratings");
+
+                    b.Navigation("Stages");
                 });
 #pragma warning restore 612, 618
         }
