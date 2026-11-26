@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   mongo:
     image: mongo:7
@@ -67,6 +72,49 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+
+  api:
+    build:
+      context: .
+      dockerfile: InterviewPlatform.Api/Dockerfile
+    environment:
+      # Development нужен, чтобы работал Swagger (для демонстрации)
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Mongo__ConnectionString: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017
+      Kafka__BootstrapServers: kafka:29092
+      Jwt__Key: ${JWT_KEY}
+      Admin__Login: ${ADMIN_LOGIN}
+      Admin__Password: ${ADMIN_PASSWORD}
+      LogDirectory: /logs
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+      kafka:
+        condition: service_started
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: InterviewPlatform.Worker/Dockerfile
+    environment:
+      Mongo__ConnectionString: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017
+      Kafka__BootstrapServers: kafka:29092
+      Pdf__FontFamily: DejaVu Sans
+      LogDirectory: /logs
+    volumes:
+      - ./logs:/logs
+    depends_on:
+      - mongo
+      - kafka
+    restart: unless-stopped
 
 volumes:
   pgdata:
