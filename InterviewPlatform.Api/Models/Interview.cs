@@ -11,6 +11,7 @@ public class Interview
     public Vacancy? Vacancy { get; set; }
 
     public DateTime ScheduledAt { get; set; }
+    public bool IsArchived { get; set; }
     public string Comment { get; set; } = "";
     public InterviewStatus Status { get; set; } = InterviewStatus.Pending;
 

@@ -6,5 +6,5 @@ public interface ICandidateService
 {
     Task<CandidateDto> CreateAsync(CreateCandidateRequest request);
     Task<CandidateDto?> GetByIdAsync(int id);
-    Task<List<CandidateDto>> SearchAsync(string? search);
+    Task<List<CandidateDto>> SearchAsync(string? search, bool archived = false);
 }

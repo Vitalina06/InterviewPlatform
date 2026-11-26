@@ -31,6 +31,11 @@ public class InterviewService : IInterviewService
             return (null, "Кандидат не найден");
         }
 
+        if (candidate.IsArchived)
+        {
+            return (null, "Кандидат в архиве, сначала восстановите его");
+        }
+
         var vacancy = await _vacancies.GetByIdAsync(request.VacancyId);
         if (vacancy == null)
         {
@@ -122,9 +127,9 @@ public class InterviewService : IInterviewService
         return interview == null ? null : ToDto(interview);
     }
 
-    public async Task<List<InterviewDto>> GetListAsync(int? candidateId)
+    public async Task<List<InterviewDto>> GetListAsync(int? candidateId, bool archived = false)
     {
-        var interviews = await _interviews.GetListAsync(candidateId);
+        var interviews = await _interviews.GetListAsync(candidateId, archived);
         return interviews.Select(ToDto).ToList();
     }
 

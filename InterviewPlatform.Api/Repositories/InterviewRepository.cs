@@ -25,9 +25,9 @@ public class InterviewRepository : IInterviewRepository
         return await WithDetails().FirstOrDefaultAsync(i => i.Id == id);
     }
 
-    public async Task<List<Interview>> GetListAsync(int? candidateId)
+    public async Task<List<Interview>> GetListAsync(int? candidateId, bool archived)
     {
-        var query = WithDetails().AsNoTracking();
+        var query = WithDetails().AsNoTracking().Where(i => i.IsArchived == archived);
 
         if (candidateId != null)
         {
@@ -35,6 +35,15 @@ public class InterviewRepository : IInterviewRepository
         }
 
         return await query.OrderByDescending(i => i.ScheduledAt).ToListAsync();
+    }
+
+    public async Task<bool> SetArchivedAsync(int id, bool archived)
+    {
+        var rows = await _db.Interviews
+            .Where(i => i.Id == id)
+            .ExecuteUpdateAsync(s => s.SetProperty(i => i.IsArchived, archived));
+
+        return rows > 0;
     }
 
     public async Task SaveAsync()

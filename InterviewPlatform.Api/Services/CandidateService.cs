@@ -39,9 +39,9 @@ public class CandidateService : ICandidateService
         return candidate == null ? null : ToDto(candidate);
     }
 
-    public async Task<List<CandidateDto>> SearchAsync(string? search)
+    public async Task<List<CandidateDto>> SearchAsync(string? search, bool archived = false)
     {
-        var candidates = await _candidates.SearchAsync(search);
+        var candidates = await _candidates.SearchAsync(search, archived);
         return candidates.Select(ToDto).ToList();
     }
 

@@ -1,3 +1,6 @@
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Compact;
 using InterviewPlatform.Shared;
 using System.Text.Json.Serialization;
 using System.Text;
@@ -10,6 +13,18 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, services, logger) => logger
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Service", "api")
+    .WriteTo.Console()
+    .WriteTo.File(
+        new RenderedCompactJsonFormatter(),
+        Path.Combine(context.Configuration["LogDirectory"]!, "api-.json"),
+        rollingInterval: RollingInterval.Day,
+        shared: true));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
@@ -31,6 +46,7 @@ builder.Services.AddSingleton<IDocumentStore, MongoDocumentStore>();
 builder.Services.AddSingleton<IMessagePublisher, KafkaMessagePublisher>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IArchiveService, ArchiveService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
