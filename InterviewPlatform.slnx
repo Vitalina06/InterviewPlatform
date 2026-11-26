@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="InterviewPlatform.Api/InterviewPlatform.Api.csproj" />
   <Project Path="InterviewPlatform.Shared/InterviewPlatform.Shared.csproj" />
+  <Project Path="InterviewPlatform.Tests/InterviewPlatform.Tests.csproj" />
   <Project Path="InterviewPlatform.Worker/InterviewPlatform.Worker.csproj" />
 </Solution>

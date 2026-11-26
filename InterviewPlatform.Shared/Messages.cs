@@ -28,7 +28,7 @@ public class RatingData
     public string Comment { get; set; } = "";
 }
 
-// все данные, которые нужны для PDF (Worker не ходит в Postgres)
+// все данные, которые нужны для PDF
 public class DocumentData
 {
     public string CandidateName { get; set; } = "";

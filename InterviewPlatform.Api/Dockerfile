@@ -1,7 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# сначала только проекты - так Docker кэширует восстановление пакетов
 COPY InterviewPlatform.Shared/InterviewPlatform.Shared.csproj InterviewPlatform.Shared/
 COPY InterviewPlatform.Api/InterviewPlatform.Api.csproj InterviewPlatform.Api/
 RUN dotnet restore InterviewPlatform.Api/InterviewPlatform.Api.csproj
