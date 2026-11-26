@@ -1,0 +1,99 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f5f8;
+  color: #222;
+}
+
+.hidden { display: none !important; }
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 24px;
+  background: #2c3e63;
+  color: #fff;
+}
+
+.logo { font-weight: bold; margin-right: 12px; }
+nav { display: flex; gap: 6px; flex: 1; }
+nav button { background: transparent; border: 1px solid #5a6c96; }
+nav button.active { background: #4a6fc2; border-color: #4a6fc2; }
+
+main { max-width: 1100px; margin: 20px auto; padding: 0 16px; }
+
+h2 { margin-top: 0; }
+
+button {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 4px;
+  background: #3b5fb5;
+  color: #fff;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+button.danger { background: #b53b3b; }
+
+input, select, textarea {
+  padding: 7px;
+  border: 1px solid #b7bfcc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+form label { display: block; margin: 8px 0 2px; font-size: 14px; }
+form input:not([type=checkbox]), form select, form textarea { width: 100%; max-width: 420px; }
+form button { margin-top: 10px; margin-right: 6px; }
+
+form.inline { display: flex; gap: 8px; margin-bottom: 12px; }
+form.inline input { max-width: 300px; }
+
+.row { display: flex; gap: 8px; margin: 4px 0; }
+.row input:first-child { flex: 1; max-width: 300px; }
+.row input[type=number] { width: 70px; }
+
+.checks label { display: inline-block; margin-right: 14px; }
+
+details {
+  background: #fff;
+  border: 1px solid #d5dae3;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin: 12px 0;
+}
+summary { cursor: pointer; font-weight: bold; }
+
+table { width: 100%; border-collapse: collapse; background: #fff; margin: 8px 0 14px; }
+th, td { border: 1px solid #d5dae3; padding: 7px 9px; text-align: left; font-size: 14px; vertical-align: top; }
+th { background: #e8ecf3; }
+td input { width: 100% !important; max-width: none !important; }
+
+.card {
+  background: #fff;
+  border: 1px solid #d5dae3;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+.card h3 { margin: 0 0 6px; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.actions button { margin: 0; }
+
+.badge { padding: 2px 8px; border-radius: 10px; font-size: 13px; background: #ddd; }
+.badge.Accepted { background: #bfe8c6; }
+.badge.Rejected { background: #f1c0c0; }
+.badge.NextStage { background: #f4e3a8; }
+
+.muted { color: #777; }
+
+.message { max-width: 1100px; margin: 12px auto 0; padding: 10px 14px; border-radius: 4px; }
+.message.success { background: #d9f0dd; }
+.message.error { background: #f6d6d6; }
+
+.login-box { max-width: 380px; margin: 80px auto; background: #fff; padding: 24px; border-radius: 8px; border: 1px solid #d5dae3; }
