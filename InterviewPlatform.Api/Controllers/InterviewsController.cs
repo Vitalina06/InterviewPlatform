@@ -11,10 +11,12 @@ namespace InterviewPlatform.Api.Controllers;
 public class InterviewsController : ControllerBase
 {
     private readonly IInterviewService _interviews;
+    private readonly IAuditService _audit;
 
-    public InterviewsController(IInterviewService interviews)
+    public InterviewsController(IInterviewService interviews, IAuditService audit)
     {
         _interviews = interviews;
+        _audit = audit;
     }
 
     [HttpGet]
@@ -49,7 +51,8 @@ public class InterviewsController : ControllerBase
             return BadRequest(new { error });
         }
 
-        return CreatedAtAction(nameof(GetById), new { id = interview!.Id }, interview);
+        await _audit.LogAsync("InterviewCreated", $"Собеседование {interview!.Id}, кандидат {interview.CandidateName}");
+        return CreatedAtAction(nameof(GetById), new { id = interview.Id }, interview);
     }
 
     [HttpPut("{id}/ratings")]
@@ -77,6 +80,7 @@ public class InterviewsController : ControllerBase
             return BadRequest(new { error });
         }
 
+        await _audit.LogAsync("InterviewDecision", $"Собеседование {id}: {request.Status}");
         return Ok(interview);
     }
 }

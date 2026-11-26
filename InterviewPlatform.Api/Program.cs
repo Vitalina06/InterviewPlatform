@@ -1,3 +1,4 @@
+using InterviewPlatform.Shared;
 using System.Text.Json.Serialization;
 using System.Text;
 using InterviewPlatform.Api.Data;
@@ -24,6 +25,12 @@ builder.Services.AddScoped<IVacancyRepository, VacancyRepository>();
 builder.Services.AddScoped<IVacancyService, VacancyService>();
 builder.Services.AddScoped<IInterviewRepository, InterviewRepository>();
 builder.Services.AddScoped<IInterviewService, InterviewService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<MongoContext>();
+builder.Services.AddSingleton<IDocumentStore, MongoDocumentStore>();
+builder.Services.AddSingleton<IMessagePublisher, KafkaMessagePublisher>();
+builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
